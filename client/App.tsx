@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import RepoDashboard from "./pages/RepoDashboard";
+import UserDashboard from "./pages/UserDashboard";
 import AnalysisSearch from "./pages/AnalysisSearch";
 import Placeholder from "./pages/Placeholder";
 import Layout from "./components/layout/Layout";
@@ -27,6 +28,8 @@ const App = () => (
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
             <Route path="/r/:owner/:repo" element={<RepoDashboard />} />
+            <Route path="/user/:username" element={<UserDashboard />} />
+            <Route path="/u/:username" element={<UserDashboard />} />
             <Route path="/search" element={<AnalysisSearch />} />
             <Route path="/roadmap" element={<Placeholder title="RepoLens roadmap" description="AI Q&A, security scanning, duplicate code detection, and PR impact visualization are coming next." />} />
             <Route path="*" element={<NotFound />} />

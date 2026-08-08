@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Cat, Check, Code2, Monitor, Moon, Settings, Sun } from "lucide-react";
+import { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Cat, Check, Monitor, Moon, Search, Settings, Sun, User } from "lucide-react";
+import { parseRepoInput, parseUserInput } from "@/lib/github";
 import { useTheme, type ThemeMode } from "./ThemeProvider";
 
 const GITHUB_CAT_IMAGE = "https://cdn.builder.io/api/v1/image/assets%2F03d5a841c8c44ee1adf85cdf1db1116b%2Fb187ecae5cc7455e920940500fb535bc?format=webp&width=800&height=1200";
@@ -38,6 +39,69 @@ function ThemeSettings() {
   );
 }
 
+function QuickUserSearch() {
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleQuickSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+
+    const repoMatch = parseRepoInput(query);
+    if (repoMatch) {
+      navigate(`/r/${repoMatch.owner}/${repoMatch.repo}`);
+      setOpen(false);
+      setQuery("");
+      return;
+    }
+
+    const userMatch = parseUserInput(query);
+    if (userMatch) {
+      navigate(`/user/${userMatch.username}`);
+      setOpen(false);
+      setQuery("");
+      return;
+    }
+  };
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="hidden items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground md:inline-flex"
+      >
+        <User className="h-4 w-4 text-brand" />
+        Find User
+      </button>
+
+      {open && (
+        <form
+          onSubmit={handleQuickSubmit}
+          className="absolute right-0 top-12 z-50 flex w-72 items-center gap-2 rounded-xl border border-white/15 bg-card/90 p-2 shadow-2xl backdrop-blur-2xl"
+        >
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <input
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Username e.g. facebook"
+              className="h-9 w-full rounded-lg border border-border bg-background pl-8 pr-2 text-xs outline-none focus:ring-1 focus:ring-brand"
+            />
+          </div>
+          <button
+            type="submit"
+            className="rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            Go
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-background/35 shadow-[0_8px_30px_hsl(225_30%_3%_/_0.18)] backdrop-blur-2xl">
@@ -50,6 +114,7 @@ export default function SiteHeader() {
         </Link>
 
         <nav className="flex items-center gap-2">
+          <QuickUserSearch />
           <Link
             to="/search"
             className="hidden rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"

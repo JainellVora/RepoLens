@@ -79,9 +79,45 @@ export interface PullRequestImpact {
   files: string[];
 }
 
+export interface UserProfile {
+  login: string;
+  avatar_url: string;
+  html_url: string;
+  name: string | null;
+  bio: string | null;
+  public_repos: number;
+  followers: number;
+  following: number;
+  company: string | null;
+  location: string | null;
+  blog: string | null;
+}
+
 export function parsePullRequestInput(input: string): { number: number } | null {
   const match = input.trim().match(/(?:\/pull\/|#)(\d+)\/?$/i);
   return match ? { number: Number(match[1]) } : null;
+}
+
+export function parseUserInput(input: string): { username: string } | null {
+  const trimmed = input.trim().replace(/^@/, "").replace(/^user:/i, "").replace(/\/$/, "");
+  if (!trimmed) return null;
+
+  const urlMatch = trimmed.match(
+    /^(?:https?:\/\/)?(?:www\.)?github\.com\/(?:users\/)?([a-zA-Z0-9-]+)\/?$/i,
+  );
+  if (urlMatch) {
+    const name = urlMatch[1];
+    if (!["search", "settings", "notifications", "explore"].includes(name.toLowerCase())) {
+      return { username: name };
+    }
+  }
+
+  const singleMatch = trimmed.match(/^[a-zA-Z0-9-]{1,39}$/);
+  if (singleMatch) {
+    return { username: singleMatch[0] };
+  }
+
+  return null;
 }
 
 export function parseRepoInput(input: string): ParsedRepoRef | null {
@@ -101,6 +137,30 @@ export function parseRepoInput(input: string): ParsedRepoRef | null {
   }
 
   return null;
+}
+
+export async function fetchUserProfile(username: string): Promise<UserProfile> {
+  const url = `https://api.github.com/users/${username}`;
+  const data = await ghFetch(url);
+  return {
+    login: data.login,
+    avatar_url: data.avatar_url,
+    html_url: data.html_url,
+    name: data.name ?? null,
+    bio: data.bio ?? null,
+    public_repos: data.public_repos ?? 0,
+    followers: data.followers ?? 0,
+    following: data.following ?? 0,
+    company: data.company ?? null,
+    location: data.location ?? null,
+    blog: data.blog ?? null,
+  };
+}
+
+export async function fetchUserRepos(username: string): Promise<RepoInfo[]> {
+  const url = `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`;
+  const repos = await ghFetch(url);
+  return Array.isArray(repos) ? repos : [];
 }
 
 async function ghFetch(url: string) {
