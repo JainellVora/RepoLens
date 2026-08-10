@@ -4,17 +4,15 @@ import { Cat, Check, Monitor, Moon, Search, Settings, Sun, User } from "lucide-r
 import { parseRepoInput, parseUserInput } from "@/lib/github";
 import { useTheme, type ThemeMode } from "./ThemeProvider";
 
-const GITHUB_CAT_IMAGE = "https://cdn.builder.io/api/v1/image/assets%2F03d5a841c8c44ee1adf85cdf1db1116b%2Fb187ecae5cc7455e920940500fb535bc?format=webp&width=800&height=1200";
-
 export function RepoLensMark({ compact = false }: { compact?: boolean }) {
   return (
-    <span className={`repolens-mark ${compact ? "repolens-mark-compact" : ""}`} aria-hidden="true">
-      <span className="repolens-mark-orbit repolens-mark-orbit-back" />
-      <span className="repolens-mark-orbit repolens-mark-orbit-front" />
-      <span className="repolens-mark-glass" />
-      <span className="repolens-mark-core"><img src={GITHUB_CAT_IMAGE} alt="" /></span>
-      <span className="repolens-mark-handle" />
-    </span>
+    <img
+      src="/logo.png"
+      alt="Repo Lens"
+      className={`inline-block shrink-0 rounded-xl object-contain drop-shadow-md transition-transform hover:scale-105 ${
+        compact ? "h-9 w-9" : "h-20 w-20"
+      }`}
+    />
   );
 }
 
@@ -109,7 +107,7 @@ export default function SiteHeader() {
         <Link to="/" className="group flex items-center gap-2">
           <RepoLensMark compact />
           <span className="text-lg font-bold tracking-tight">
-            Repo<span className="text-gradient">Lens</span>
+            Repo <span className="text-gradient">Lens</span>
           </span>
         </Link>
 

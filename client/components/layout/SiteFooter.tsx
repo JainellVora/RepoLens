@@ -7,7 +7,7 @@ export default function SiteFooter() {
       <div className="container flex flex-col items-center justify-between gap-4 py-8 sm:flex-row">
         <div className="flex items-center gap-2">
           <RepoLensMark compact />
-          <span className="text-sm font-semibold">RepoLens</span>
+          <span className="text-sm font-semibold">Repo Lens</span>
           <span className="text-sm text-muted-foreground">
             — understand any repo in under 60 seconds.
           </span>

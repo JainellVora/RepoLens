@@ -57,7 +57,7 @@ export default function Index() {
             <span className="text-gradient">or explore any user.</span>
           </h1>
           <p className="animate-fade-up mx-auto mt-5 max-w-xl text-balance text-lg text-muted-foreground" style={{ animationDelay: "150ms" }}>
-            RepoLens analyzes public repositories and GitHub profiles — architecture, dependencies, code organization, and user repos, instantly.
+            Repo Lens analyzes public repositories and GitHub profiles — architecture, dependencies, code organization, and user repos, instantly.
           </p>
 
           <form onSubmit={handleSubmit} className="animate-fade-up raised-control mx-auto mt-9 flex max-w-xl flex-col gap-3 rounded-xl p-1 sm:flex-row" style={{ animationDelay: "220ms" }}>
